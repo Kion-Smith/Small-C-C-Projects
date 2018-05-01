@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1525221565 source:c:\users\neonkion\desktop\personal stuff\cspromgram\c++ games\console games\memory with winapi\main.cpp
+	<iostream>
+	<string>
+	<windows.h>
+	<tlhelp32.h>
+
