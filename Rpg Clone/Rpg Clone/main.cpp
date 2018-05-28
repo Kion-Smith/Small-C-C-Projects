@@ -1,7 +1,9 @@
 #include <iostream>
 #include <windows.h>
+#include <thread>
 
-bool checkNextMove(int, int, int);
+using namespace std;
+bool checkNextMove(int, int);
 
 int playFieldWidth = 50;
 int playFieldHeight = 20;
@@ -23,7 +25,10 @@ int main()
 	{
 		for (int y = 0; y < playFieldHeight; y++)
 		{
-			playField[y*playFieldWidth + x] = ( x==0 || y==0 ||x == playFieldWidth - 1 || y == playFieldHeight - 1) ? 2 : 1;
+			playField[y*playFieldWidth + x] = ( x==0 || y==0 ||x == playFieldWidth - 1 || y == playFieldHeight - 1) ? 1 : (rand() % 3)+2;
+			
+
+
 		}
 	}
 
@@ -50,39 +55,48 @@ int main()
 
 	while (isRunning)
 	{
+		this_thread::sleep_for(50ms);
 
 		for (int k = 0; k < 4; k++)
-		{
-																// left,up,right,down		
-			keys[4] = (0x8000 & GetAsyncKeyState((unsigned char)("\x25\x26\x27\x28"[k]))) != 0;
+		{													// left,up,right,down		
+			keys[k] = (0x8000 & GetAsyncKeyState((unsigned char)("\x25\x26\x27\x28"[k]))) != 0;
 		}
+
+		curX -= (keys[0] && checkNextMove(curX-1,curY) ) ? 1 : 0; //25 (Left)
+		curY -= (keys[1] && checkNextMove(curX, curY-1)) ? 1 : 0; //26 (Up)
+		curX += (keys[2] && checkNextMove(curX + 1, curY)) ? 1 : 0; //27 (Right)
+		curY += (keys[3] && checkNextMove(curX, curY+1)) ? 1 : 0; //28 (Down)
+	
 
 		for (int x = 0; x < playFieldWidth; x++)
 		{
 			for (int y = 0; y < playFieldHeight; y++)
 			{
-				screen[(y+2)*consoleWidth + (x+4)] = L" \u2591\u2588"[playField[y*playFieldWidth + x]];
+				screen[(y+2)*consoleWidth + (x+4)] = L" \u2588\u2591#"[playField[y*playFieldWidth + x]];
 			}
 		}
-
-		//this will be player movement 
-		if (false) //add some way to check player movements
-		{
-
-		}
-		else
-		{
-
-		}
+	
 		//drawing player
 		screen[curY*consoleWidth + curX] = L'\u263B';
 
 		WriteConsoleOutputCharacter(console, screen, consoleWidth*consoleHeight, { 0,0 } ,&dwBytesWritten);
 	}
 
-	
-
-
 	return 0;
 }
 
+//going to add collsion to other obsticals later
+bool checkNextMove(int posX, int posY)
+{
+	if (posX >= 0+5 && posX < playFieldWidth+3)
+	{
+		if (posY >= 0+3 && posY < playFieldHeight+1)
+		{
+			return true;
+		}
+	}
+	
+	return false;
+
+
+}
