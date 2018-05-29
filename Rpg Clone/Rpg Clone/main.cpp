@@ -25,14 +25,14 @@ int main()
 	{
 		for (int y = 0; y < playFieldHeight; y++)
 		{
-			playField[y*playFieldWidth + x] = ( x==0 || y==0 ||x == playFieldWidth - 1 || y == playFieldHeight - 1) ? 1 : (rand() % 3)+2;
+			playField[y*playFieldWidth + x] = ( x==0 || y==0 ||x == playFieldWidth - 1 || y == playFieldHeight - 1) ? 0 : (rand() %2)+1;
 			
-
-
 		}
 	}
 
 	wchar_t *screen = new wchar_t[consoleWidth*consoleHeight];
+	wchar_t *battleScreen = new wchar_t[consoleWidth*consoleHeight];
+
 	for (int i = 0; i < consoleWidth*consoleHeight; i++)
 	{
 		screen[i] = L' ';
@@ -66,20 +66,35 @@ int main()
 		curY -= (keys[1] && checkNextMove(curX, curY-1)) ? 1 : 0; //26 (Up)
 		curX += (keys[2] && checkNextMove(curX + 1, curY)) ? 1 : 0; //27 (Right)
 		curY += (keys[3] && checkNextMove(curX, curY+1)) ? 1 : 0; //28 (Down)
-	
+
 
 		for (int x = 0; x < playFieldWidth; x++)
 		{
 			for (int y = 0; y < playFieldHeight; y++)
 			{
-				screen[(y+2)*consoleWidth + (x+4)] = L" \u2588\u2591#"[playField[y*playFieldWidth + x]];
+				screen[(y+2)*consoleWidth + (x+4)] = L"\u2588\u2591 #"[playField[y*playFieldWidth + x]];
+				
 			}
 		}
 	
-		//drawing player
-		screen[curY*consoleWidth + curX] = L'\u263B';
 
-		WriteConsoleOutputCharacter(console, screen, consoleWidth*consoleHeight, { 0,0 } ,&dwBytesWritten);
+
+		if (screen[curY*consoleWidth + curX] == L'\u2591')
+		{
+			//CloseHandle(console);
+			WriteConsoleOutputCharacter(console, battleScreen, consoleWidth*consoleHeight, { 0,0 }, &dwBytesWritten);
+		}
+		else
+		{
+			screen[curY*consoleWidth + curX] = L'\u263B';
+			WriteConsoleOutputCharacter(console, screen, consoleWidth*consoleHeight, { 0,0 }, &dwBytesWritten);
+		}
+
+		//drawing player
+		
+
+		
+
 	}
 
 	return 0;
@@ -100,3 +115,5 @@ bool checkNextMove(int posX, int posY)
 
 
 }
+
+
