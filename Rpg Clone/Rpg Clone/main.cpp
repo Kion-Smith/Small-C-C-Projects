@@ -3,6 +3,7 @@
 #include <thread>
 
 using namespace std;
+void startBattleAnimation(HANDLE eventConsole, wchar_t *pointer, DWORD bytes);
 bool checkNextMove(int, int);
 
 int playFieldWidth = 50;
@@ -36,6 +37,7 @@ int main()
 	for (int i = 0; i < consoleWidth*consoleHeight; i++)
 	{
 		screen[i] = L' ';
+		battleScreen[i] = L' ';
 	}
 
 
@@ -52,6 +54,8 @@ int main()
 	int playerChar = 3;
 	int curX = playFieldWidth/ 2;
 	int curY = playFieldHeight/2;
+
+	bool ranAnimation = false;
 
 	while (isRunning)
 	{
@@ -78,24 +82,42 @@ int main()
 		}
 	
 
-
+		//maybe convert to a switch stament?
+		//need to stop player controll of character
+		//need alg to draw box with unicode characters
 		if (screen[curY*consoleWidth + curX] == L'\u2591')
 		{
-			//CloseHandle(console);
-			WriteConsoleOutputCharacter(console, battleScreen, consoleWidth*consoleHeight, { 0,0 }, &dwBytesWritten);
+			if (!ranAnimation)
+			{
+				for (int i = 2; i > 0; i--)
+				{
+					startBattleAnimation(console, battleScreen, dwBytesWritten);
+					this_thread::sleep_for(100ms);
+					WriteConsoleOutputCharacter(console, screen, consoleWidth*consoleHeight, { 0,0 }, &dwBytesWritten);
+				}
+				screen[curY*consoleWidth + curX] = L'\u263B';	
+				ranAnimation = true;
+			}
+			else
+			{
+				
+				WriteConsoleOutputCharacter(console, battleScreen, consoleWidth*consoleHeight, { 0,0 }, &dwBytesWritten);
+				
+			}
+			
+				
+			
+			
+			
 		}
 		else
 		{
+			ranAnimation = false;
 			screen[curY*consoleWidth + curX] = L'\u263B';
 			WriteConsoleOutputCharacter(console, screen, consoleWidth*consoleHeight, { 0,0 }, &dwBytesWritten);
 		}
-
-		//drawing player
-		
-
-		
-
-	}
+				
+	} //end game loop
 
 	return 0;
 }
@@ -116,4 +138,33 @@ bool checkNextMove(int posX, int posY)
 
 }
 
+void startBattleAnimation(HANDLE eventConsole,wchar_t *screen,DWORD bytes)
+{
+	//make this run twice wit one loop not 2
+	for (int x = 0; x < playFieldWidth; x++)
+	{
+		for (int y = 0; y < playFieldHeight; y++)
+		{
 
+			screen[(y + 2)*consoleWidth + (x + 4)] = L'.';
+			
+			
+		}
+	}
+	this_thread::sleep_for(150ms);
+	WriteConsoleOutputCharacter(eventConsole, screen, consoleWidth*consoleHeight, { 0,0 }, &bytes);
+	
+	for (int x = 0; x < playFieldWidth; x++)
+	{
+		for (int y = 0; y < playFieldHeight; y++)
+		{
+
+			screen[(y + 2)*consoleWidth + (x + 4)] = L' ';
+			
+
+		}
+	}
+	this_thread::sleep_for(150ms);
+	WriteConsoleOutputCharacter(eventConsole, screen, consoleWidth*consoleHeight, { 0,0 }, &bytes);
+	
+}
