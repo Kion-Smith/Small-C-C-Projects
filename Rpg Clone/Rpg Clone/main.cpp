@@ -2,7 +2,31 @@
 #include <windows.h>
 #include <thread>
 
+/*	 To do list
+--------------------
+- Implement monsters in wild encounters
+	*implment a dictionary to hold all monster atributes
+
+-Add to battle screen 
+	*Add boxs for fighting
+	*menu for, team selection,battle,runing from battle, items (bag)
+	*add animations to transtion battle screen to over world
+
+-Fix terain
+	*Add more obstacales
+	*Add real terrain gen and not just random items scattered around the screen]
+
+-Longer term goals
+	*add enemy teams and not just wild monsters
+		*add ai to the teams to counter plays
+	*add more than one location
+		>use an actual map
+
+*/
+
+
 using namespace std;
+bool isBattleTile(wchar_t,bool);
 void startBattleAnimation(HANDLE eventConsole, wchar_t *pointer, DWORD bytes);
 bool checkNextMove(int, int);
 
@@ -90,14 +114,13 @@ int main()
 		//need to stop player controll of character
 		//need alg to draw box with unicode charactersm
 
-		int rate = (rand() % 10)+1; // 1 out of ten
 
+		inBattle = isBattleTile(screen[curY*consoleWidth + curX],inBattle);
 
-		if (screen[curY*consoleWidth + curX] == L'\u2591' && rate == 1)
+		if (inBattle)
 		{
 			int holdX = curX;
 			int holdY = curY;
-			
 			
 			
 			if (!ranAnimation)
@@ -110,7 +133,7 @@ int main()
 
 				}
 				screen[curY*consoleWidth + curX] = L'\u263B';
-
+				ranAnimation = true;
 
 			}
 			else
@@ -138,6 +161,22 @@ int main()
 	} //end game loop
 
 	return 0;
+}
+
+bool isBattleTile(wchar_t curTile,bool battleState)
+{
+	if (battleState)
+	{
+		return true;
+	}
+	else if (curTile == L'\u2591' && (rand() % 10) - 1 == 1)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 //going to add collsion to other obsticals later
