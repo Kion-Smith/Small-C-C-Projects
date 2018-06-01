@@ -50,6 +50,8 @@ int main()
 	bool isRunning = true;
 	bool keys[4];
 
+	bool inBattle = false;
+
 	// player items
 	int playerChar = 3;
 	int curX = playFieldWidth/ 2;
@@ -65,12 +67,14 @@ int main()
 		{													// left,up,right,down		
 			keys[k] = (0x8000 & GetAsyncKeyState((unsigned char)("\x25\x26\x27\x28"[k]))) != 0;
 		}
-
-		curX -= (keys[0] && checkNextMove(curX-1,curY) ) ? 1 : 0; //25 (Left)
-		curY -= (keys[1] && checkNextMove(curX, curY-1)) ? 1 : 0; //26 (Up)
-		curX += (keys[2] && checkNextMove(curX + 1, curY)) ? 1 : 0; //27 (Right)
-		curY += (keys[3] && checkNextMove(curX, curY+1)) ? 1 : 0; //28 (Down)
-
+		 
+		if (!inBattle)
+		{
+			curX -= (keys[0] && checkNextMove(curX - 1, curY)) ? 1 : 0; //25 (Left)
+			curY -= (keys[1] && checkNextMove(curX, curY - 1)) ? 1 : 0; //26 (Up)
+			curX += (keys[2] && checkNextMove(curX + 1, curY)) ? 1 : 0; //27 (Right)
+			curY += (keys[3] && checkNextMove(curX, curY + 1)) ? 1 : 0; //28 (Down)
+		}
 
 		for (int x = 0; x < playFieldWidth; x++)
 		{
@@ -84,9 +88,18 @@ int main()
 
 		//maybe convert to a switch stament?
 		//need to stop player controll of character
-		//need alg to draw box with unicode characters
-		if (screen[curY*consoleWidth + curX] == L'\u2591')
+		//need alg to draw box with unicode charactersm
+
+		int rate = (rand() % 10)+1; // 1 out of ten
+
+
+		if (screen[curY*consoleWidth + curX] == L'\u2591' && rate == 1)
 		{
+			int holdX = curX;
+			int holdY = curY;
+			
+			
+			
 			if (!ranAnimation)
 			{
 				for (int i = 2; i > 0; i--)
@@ -94,18 +107,20 @@ int main()
 					startBattleAnimation(console, battleScreen, dwBytesWritten);
 					this_thread::sleep_for(100ms);
 					WriteConsoleOutputCharacter(console, screen, consoleWidth*consoleHeight, { 0,0 }, &dwBytesWritten);
+
 				}
-				screen[curY*consoleWidth + curX] = L'\u263B';	
-				ranAnimation = true;
+				screen[curY*consoleWidth + curX] = L'\u263B';
+
+
 			}
 			else
 			{
 				
 				WriteConsoleOutputCharacter(console, battleScreen, consoleWidth*consoleHeight, { 0,0 }, &dwBytesWritten);
-				
+
 			}
 			
-				
+			
 			
 			
 			
@@ -115,7 +130,10 @@ int main()
 			ranAnimation = false;
 			screen[curY*consoleWidth + curX] = L'\u263B';
 			WriteConsoleOutputCharacter(console, screen, consoleWidth*consoleHeight, { 0,0 }, &dwBytesWritten);
+
+			
 		}
+		
 				
 	} //end game loop
 
