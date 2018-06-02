@@ -4,6 +4,9 @@
 
 /*	 To do list
 --------------------
+//Need to do next
+	-figure out a way to check if the player was previously on the tile
+
 - Implement monsters in wild encounters
 	*implment a dictionary to hold all monster atributes
 
@@ -72,12 +75,13 @@ int main()
 
 	//game loop items
 	bool isRunning = true;
-	bool keys[4];
-
 	bool inBattle = false;
 
+	const int keyAmount = 5;
+	bool keys[keyAmount];
+
 	// player items
-	int playerChar = 3;
+	//int playerChar = 3;
 	int curX = playFieldWidth/ 2;
 	int curY = playFieldHeight/2;
 
@@ -87,9 +91,9 @@ int main()
 	{
 		this_thread::sleep_for(50ms);
 
-		for (int k = 0; k < 4; k++)
+		for (int k = 0; k < keyAmount; k++)
 		{													// left,up,right,down		
-			keys[k] = (0x8000 & GetAsyncKeyState((unsigned char)("\x25\x26\x27\x28"[k]))) != 0;
+			keys[k] = (0x8000 & GetAsyncKeyState((unsigned char)("\x25\x26\x27\x28\x0D"[k]))) != 0;
 		}
 		 
 		if (!inBattle)
@@ -98,6 +102,10 @@ int main()
 			curY -= (keys[1] && checkNextMove(curX, curY - 1)) ? 1 : 0; //26 (Up)
 			curX += (keys[2] && checkNextMove(curX + 1, curY)) ? 1 : 0; //27 (Right)
 			curY += (keys[3] && checkNextMove(curX, curY + 1)) ? 1 : 0; //28 (Down)
+		}
+		else
+		{
+			inBattle = (keys[4]) ? false : true;
 		}
 
 		for (int x = 0; x < playFieldWidth; x++)
