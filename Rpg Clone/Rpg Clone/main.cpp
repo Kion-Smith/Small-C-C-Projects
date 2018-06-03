@@ -146,7 +146,51 @@ int main()
 			}
 			else
 			{
+				//need to figure out whats wrong here, also maybe set this to return the battle screen after creating the background
+					//- optimize this code
+				for (int x = 0; x < playFieldWidth; x++)
+				{
+					for (int y = 0; y < playFieldHeight; y++)
+					{
+
+		
+						if (x == 0 && y == 0)
+						{
+							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u25CF';// dot
+						}
+						else if (y == playFieldHeight - 1 && x == playFieldWidth - 1)
+						{
+							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u25CF';// dot
+						}
+						else if (y == 0 || y == playFieldHeight - 1)
+						{
+							if (x != playFieldWidth - 1)
+							{
+								battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2550';
+							}
+							else if (x == playFieldWidth - 1)
+							{
+								battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u25CF';// dot
+							}
+						}
+						else if (x == 0 || x == playFieldWidth - 1)
+						{
+							if (y != playFieldHeight - 1)
+							{
+								battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2551';
+							}
+							
+
+						}
+
 				
+						if (x == 0 && y == playFieldHeight - 1)
+						{
+							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u25CF'; // dot
+						}
+					}
+				}
+
 				WriteConsoleOutputCharacter(console, battleScreen, consoleWidth*consoleHeight, { 0,0 }, &dwBytesWritten);
 
 			}
