@@ -6,6 +6,7 @@
 --------------------
 //Need to do next
 	-figure out a way to check if the player was previously on the tile
+	- figure out accessing a file is faster than running an array to do a fucntion
 
 - Implement monsters in wild encounters
 	*implment a dictionary to hold all monster atributes
@@ -77,11 +78,10 @@ int main()
 	bool isRunning = true;
 	bool inBattle = false;
 
+	//Keys
 	const int keyAmount = 5;
 	bool keys[keyAmount];
 
-	// player items
-	//int playerChar = 3;
 	int curX = playFieldWidth/ 2;
 	int curY = playFieldHeight/2;
 
@@ -117,12 +117,6 @@ int main()
 			}
 		}
 	
-
-		//maybe convert to a switch stament?
-		//need to stop player controll of character
-		//need alg to draw box with unicode charactersm
-
-
 		inBattle = isBattleTile(screen[curY*consoleWidth + curX],inBattle);
 
 		if (inBattle)
@@ -146,48 +140,26 @@ int main()
 			}
 			else
 			{
-				//need to figure out whats wrong here, also maybe set this to return the battle screen after creating the background
-					//- optimize this code
 				for (int x = 0; x < playFieldWidth; x++)
 				{
 					for (int y = 0; y < playFieldHeight; y++)
 					{
-
-		
-						if (x == 0 && y == 0)
-						{
-							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u25CF';// dot
-						}
-						else if (y == playFieldHeight - 1 && x == playFieldWidth - 1)
+						//maybe add some check conrer function?
+						if ((x == 0 && y == 0) || (x == 0 && y == playFieldHeight - 1) || (x == playFieldWidth - 1 && y == playFieldHeight - 1) || (x == playFieldWidth - 1 && y == 0))
 						{
 							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u25CF';// dot
 						}
 						else if (y == 0 || y == playFieldHeight - 1)
 						{
-							if (x != playFieldWidth - 1)
-							{
-								battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2550';
-							}
-							else if (x == playFieldWidth - 1)
-							{
-								battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u25CF';// dot
-							}
+							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2550';
 						}
 						else if (x == 0 || x == playFieldWidth - 1)
-						{
-							if (y != playFieldHeight - 1)
-							{
-								battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2551';
-							}
-							
-
+						{	
+							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2551';
 						}
 
-				
-						if (x == 0 && y == playFieldHeight - 1)
-						{
-							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u25CF'; // dot
-						}
+					
+
 					}
 				}
 
