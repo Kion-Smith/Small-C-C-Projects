@@ -157,6 +157,33 @@ int main()
 						{	
 							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2551';
 						}
+						//creating battle field text box need to optomize it
+						else if( x== 1 && y == 14)
+						{
+							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2554';
+						}
+						else if (x == playFieldWidth-2 && y == 14)
+						{
+							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2557';
+						}
+						else if (x == 1 && y == playFieldHeight - 2)
+						{
+							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u255A';
+						}
+						else if (x == playFieldWidth - 2 && y == playFieldHeight -2)
+						{
+							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u255D';
+						}
+
+						else if ( (y == 14 && x<playFieldWidth - 2) || (y== playFieldHeight - 2 && x<playFieldWidth - 2))
+						{
+							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2550';
+						}
+						else if ((y>14 && x==1) ||((y>14 && x == playFieldWidth - 2)) )
+						{
+							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2551';
+						}
+						
 
 					
 
