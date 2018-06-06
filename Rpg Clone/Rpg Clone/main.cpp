@@ -37,7 +37,6 @@ bool checkNextMove(int, int);
 int playFieldWidth = 50;
 int playFieldHeight = 20;
 
-
 int consoleWidth = 80;
 int consoleHeight =50;
 
@@ -77,10 +76,13 @@ int main()
 	//game loop items
 	bool isRunning = true;
 	bool inBattle = false;
-
+	
 	//Keys
 	const int keyAmount = 5;
 	bool keys[keyAmount];
+
+	int prevX =-1; 
+	int prevY=-1;
 
 	int curX = playFieldWidth/ 2;
 	int curY = playFieldHeight/2;
@@ -106,6 +108,12 @@ int main()
 		else
 		{
 			inBattle = (keys[4]) ? false : true;
+
+			if (!inBattle)
+			{
+				prevX = curX;
+				prevY = curY;
+			}
 		}
 
 		for (int x = 0; x < playFieldWidth; x++)
@@ -119,8 +127,9 @@ int main()
 	
 		inBattle = isBattleTile(screen[curY*consoleWidth + curX],inBattle);
 
-		if (inBattle)
+		if (inBattle && (curX != prevX && curY != prevY))
 		{
+			//save for the arrow key menu
 			int holdX = curX;
 			int holdY = curY;
 			
@@ -140,10 +149,12 @@ int main()
 			}
 			else
 			{
+				//!!!replace this with a map file later
 				for (int x = 0; x < playFieldWidth; x++)
 				{
 					for (int y = 0; y < playFieldHeight; y++)
 					{
+
 						//maybe add some check conrer function?
 						if ((x == 0 && y == 0) || (x == 0 && y == playFieldHeight - 1) || (x == playFieldWidth - 1 && y == playFieldHeight - 1) || (x == playFieldWidth - 1 && y == 0))
 						{
@@ -201,6 +212,7 @@ int main()
 		}
 		else
 		{
+			inBattle = false;
 			ranAnimation = false;
 			screen[curY*consoleWidth + curX] = L'\u263B';
 			WriteConsoleOutputCharacter(console, screen, consoleWidth*consoleHeight, { 0,0 }, &dwBytesWritten);
@@ -248,31 +260,27 @@ bool checkNextMove(int posX, int posY)
 
 void startBattleAnimation(HANDLE eventConsole,wchar_t *screen,DWORD bytes)
 {
-	//make this run twice wit one loop not 2
-	for (int x = 0; x < playFieldWidth; x++)
+	int count=2;
+	while (count > 0)
 	{
-		for (int y = 0; y < playFieldHeight; y++)
+		for (int x = 0; x < playFieldWidth; x++)
 		{
+			for (int y = 0; y < playFieldHeight; y++)
+			{
+				if (count % 2 == 0)
+				{
+					screen[(y + 2)*consoleWidth + (x + 4)] = L'.';
 
-			screen[(y + 2)*consoleWidth + (x + 4)] = L'.';
-			
-			
+				}
+				else
+				{
+					screen[(y + 2)*consoleWidth + (x + 4)] = L' ';
+				}
+			}
 		}
+		this_thread::sleep_for(150ms);
+		WriteConsoleOutputCharacter(eventConsole, screen, consoleWidth*consoleHeight, { 0,0 }, &bytes);
+		count--;
 	}
-	this_thread::sleep_for(150ms);
-	WriteConsoleOutputCharacter(eventConsole, screen, consoleWidth*consoleHeight, { 0,0 }, &bytes);
-	
-	for (int x = 0; x < playFieldWidth; x++)
-	{
-		for (int y = 0; y < playFieldHeight; y++)
-		{
 
-			screen[(y + 2)*consoleWidth + (x + 4)] = L' ';
-			
-
-		}
-	}
-	this_thread::sleep_for(150ms);
-	WriteConsoleOutputCharacter(eventConsole, screen, consoleWidth*consoleHeight, { 0,0 }, &bytes);
-	
 }
