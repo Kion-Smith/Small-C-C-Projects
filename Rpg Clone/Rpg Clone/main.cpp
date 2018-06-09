@@ -5,8 +5,7 @@
 /*	 To do list
 --------------------
 //Need to do next
-	-figure out a way to check if the player was previously on the tile
-	- figure out accessing a file is faster than running an array to do a fucntion
+	- figure out if accessing a file is faster than running an array to make the board/player items
 
 - Implement monsters in wild encounters
 	*implment a dictionary to hold all monster atributes
@@ -81,6 +80,8 @@ int main()
 	const int keyAmount = 5;
 	bool keys[keyAmount];
 
+	bool battleMenu[4];
+
 	int prevX =-1; 
 	int prevY=-1;
 
@@ -94,7 +95,7 @@ int main()
 		this_thread::sleep_for(50ms);
 
 		for (int k = 0; k < keyAmount; k++)
-		{													// left,up,right,down		
+		{													// left,up,right,down,enter as a debug key to escape battles	
 			keys[k] = (0x8000 & GetAsyncKeyState((unsigned char)("\x25\x26\x27\x28\x0D"[k]))) != 0;
 		}
 		 
@@ -107,6 +108,7 @@ int main()
 		}
 		else
 		{
+
 			inBattle = (keys[4]) ? false : true;
 
 			if (!inBattle)
@@ -242,6 +244,36 @@ bool isBattleTile(wchar_t curTile,bool battleState)
 	}
 }
 
+//need to add some contion to know what key was pressed
+int battleMenustate(bool bMenu[])
+{	
+	int prevState = -1;
+	//change to a constant later
+	for (int i = 0; i < 4; i--)
+	{
+		//condesne this when I have more time
+		if (bMenu[i])
+		{
+			prevState = i;
+			break;
+		}
+	}
+
+	//if no item was last selected
+	if (prevState == -1)
+	{
+		prevState = 0;
+		//possibly a switch statement
+		//choose some key contions
+	}
+	else
+	{
+		//choose some key contions
+	}
+
+
+	return -1;
+}
 //going to add collsion to other obsticals later
 bool checkNextMove(int posX, int posY)
 {
