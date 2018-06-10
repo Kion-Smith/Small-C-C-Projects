@@ -151,26 +151,26 @@ int main()
 			}
 			else
 			{
-				//!!!replace this with a map file later
+				//Possibley replace this later
 				for (int x = 0; x < playFieldWidth; x++)
 				{
 					for (int y = 0; y < playFieldHeight; y++)
 					{
 
-						//maybe add some check conrer function?
+						//The outlines
 						if ((x == 0 && y == 0) || (x == 0 && y == playFieldHeight - 1) || (x == playFieldWidth - 1 && y == playFieldHeight - 1) || (x == playFieldWidth - 1 && y == 0))
 						{
 							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u25CF';// dot
 						}
-						else if (y == 0 || y == playFieldHeight - 1)
+						else if ( y == 0 || y == playFieldHeight - 1 || ( ((y == 14 && x<playFieldWidth - 2) || (y== playFieldHeight - 2 && x<playFieldWidth - 2)) && x>1) )
 						{
 							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2550';
 						}
-						else if (x == 0 || x == playFieldWidth - 1)
+						else if (x == 0 || x == playFieldWidth - 1 || ( (y>14 && x == 1 ) || (y>14 && x == playFieldWidth - 2) && y<playFieldHeight - 2) )
 						{	
 							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2551';
 						}
-						//creating battle field text box need to optomize it
+						//Coner
 						else if( x== 1 && y == 14)
 						{
 							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2554';
@@ -186,19 +186,7 @@ int main()
 						else if (x == playFieldWidth - 2 && y == playFieldHeight -2)
 						{
 							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u255D';
-						}
-
-						else if ( (y == 14 && x<playFieldWidth - 2) || (y== playFieldHeight - 2 && x<playFieldWidth - 2))
-						{
-							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2550';
-						}
-						else if ((y>14 && x==1) ||((y>14 && x == playFieldWidth - 2)) )
-						{
-							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2551';
-						}
-						
-
-					
+						}				
 
 					}
 				}
@@ -206,10 +194,6 @@ int main()
 				WriteConsoleOutputCharacter(console, battleScreen, consoleWidth*consoleHeight, { 0,0 }, &dwBytesWritten);
 
 			}
-			
-			
-			
-			
 			
 		}
 		else
@@ -245,7 +229,7 @@ bool isBattleTile(wchar_t curTile,bool battleState)
 }
 
 //need to add some contion to know what key was pressed
-int battleMenustate(bool bMenu[])
+int battleMenustate(bool bMenu[],int keyType)
 {	
 	int prevState = -1;
 	//change to a constant later
@@ -262,7 +246,6 @@ int battleMenustate(bool bMenu[])
 	//if no item was last selected
 	if (prevState == -1)
 	{
-		prevState = 0;
 		//possibly a switch statement
 		//choose some key contions
 	}

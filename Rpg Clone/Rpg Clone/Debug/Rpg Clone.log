@@ -1,3 +1,4 @@
 ﻿  main.cpp
+c:\users\neonkion\documents\visual studio 2015\projects\rpg clone\rpg clone\main.cpp(83): warning C4101: 'battleMenu': unreferenced local variable
   Rpg Clone.vcxproj -> C:\Users\NeonKion\documents\visual studio 2015\Projects\Rpg Clone\Debug\Rpg Clone.exe
   Rpg Clone.vcxproj -> C:\Users\NeonKion\documents\visual studio 2015\Projects\Rpg Clone\Debug\Rpg Clone.pdb (Full PDB)
