@@ -1,5 +1,6 @@
 // Tetris.cpp : Defines the entry point for the console application.
 // based of a youtbe tutorial by OneLoneCoder can be found at https://www.youtube.com/watch?v=8OK8_tHeCIA&index=3&list=LL8pDyb4hQUBUbgOxTT9lhlA&t=691s
+// I want to improve on this and add the hold items to the side of the screen and possibley make a main menu
 #include "stdafx.h"
 #include <iostream>
 #include <string>
@@ -26,47 +27,25 @@ int main()
 {
 
 	// I
-	pieces[0].append(L"..X.");
-	pieces[0].append(L"..X.");
-	pieces[0].append(L"..X.");
-	pieces[0].append(L"..X.");
+	pieces[0].append(L"..X...X...X...X.");
 
 	// Z
-	pieces[1].append(L"..X.");
-	pieces[1].append(L".XX.");
-	pieces[1].append(L".X..");
-	pieces[1].append(L"....");
+	pieces[1].append(L"..X..XX..X......");
 
 	// S
-	pieces[2].append(L".X..");
-	pieces[2].append(L".XX.");
-	pieces[2].append(L"..X.");
-	pieces[2].append(L"....");
-
+	pieces[2].append(L".X...XX...X.....");
 
 	// O
-	pieces[3].append(L"....");
-	pieces[3].append(L".XX.");
-	pieces[3].append(L".XX.");
-	pieces[3].append(L"....");
+	pieces[3].append(L".....XX..XX.....");
 
 	// T
-	pieces[4].append(L"..X.");
-	pieces[4].append(L".XX.");
-	pieces[4].append(L"..X.");
-	pieces[4].append(L"....");
+	pieces[4].append(L"..X..XX...X.....");
 
 	//L
-	pieces[5].append(L"....");
-	pieces[5].append(L".XX.");
-	pieces[5].append(L"..X.");
-	pieces[5].append(L"..X.");
+	pieces[5].append(L".....XX...X...X.");
 
 	//J
-	pieces[6].append(L"....");
-	pieces[6].append(L".XX.");
-	pieces[6].append(L".X..");
-	pieces[6].append(L".X..");
+	pieces[6].append(L"..X...X..XX.....");
 
 	board = new unsigned char[boardWidth*boardHeight];
 	for (int x = 0; x < boardWidth; x++)
