@@ -1,6 +1,0 @@
-# depslib dependency file v1.0
-1526951833 source:c:\users\neonkion\desktop\personal stuff\cspromgram\c++ games\console games\tetris in c++\main.cpp
-	<iostream>
-	<string>
-	<Windows.h>
-
