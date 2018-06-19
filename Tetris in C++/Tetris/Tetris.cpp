@@ -10,6 +10,7 @@
 
 int rotatePiece(int, int, int);
 bool validPieceLoc(int, int, int, int);
+char convetPieceName(int);
 
 using namespace std;
 wstring pieces[7];
@@ -116,15 +117,16 @@ int main()
 		{
 			isRotating = true;
 		}
+
 		
 		if (bKey[4] && canHold && !canPlace)
 		{
 			holdPiece = curPiece;
 			curPiece = nextPiece;
+
 			canPlace = true;
 			canHold = false;
 		}
-
 		else if (bKey[4] && !canHold && canPlace)
 		{
 		
@@ -137,6 +139,7 @@ int main()
 			holdPiece = temp;
 			
 			canPlace = false;
+			//canHold = true;
 		}
 
 		//gravity
@@ -148,6 +151,7 @@ int main()
 			if (validPieceLoc(curPiece, curRotation, curX, curY + 1))
 			{
 				curY++;
+				
 			}
 			else
 			{
@@ -158,10 +162,12 @@ int main()
 						if (pieces[curPiece][rotatePiece(px, py, curRotation)] == L'X')
 						{
 							board[(curY + py) * boardWidth + (curX + px)] = curPiece + 1;
-							
+							//not working like I want, works if key is pressed on first item
 							canPlace = true;
+							
 						}
 					}
+					
 				}
 
 				//speed changes the number of game ticks
@@ -188,8 +194,13 @@ int main()
 							for (int px = 1; px < boardWidth - 1; px++)
 								board[(curY + py) * boardWidth + px] = 8;
 								lines.push_back(curY + py);
+
+								
 						}
 					}
+
+					
+					
 				}
 
 				score += 25;
@@ -233,8 +244,8 @@ int main()
 
 		
 		swprintf_s(&screen[2 * screenWidth + boardWidth + 6], 16, L"SCORE: %8d", score);
-		swprintf_s(&screen[6 * screenWidth + boardWidth + 6], 16, L"Next: %9d", nextPiece);
-		swprintf_s(&screen[8 * screenWidth + boardWidth + 6], 16, L"Hold: %9d", holdPiece);
+		swprintf_s(&screen[6 * screenWidth + boardWidth + 6], 16, L"Next: %9c", convetPieceName(nextPiece));
+		swprintf_s(&screen[8 * screenWidth + boardWidth + 6], 16, L"Hold: %9c", convetPieceName(holdPiece));
 
 		if (!lines.empty() )
 		{
@@ -309,5 +320,35 @@ int rotatePiece(int px, int py, int r)
 		return 3 - py + (px * 4);
 	}
 	return 0;
+}
+
+char convetPieceName(int pieceName)
+{
+	char pieceString = '\0';
+	switch (pieceName)
+	{
+		case 0:
+			pieceString = 'I';
+			break;
+		case 1:
+			pieceString = 'Z';
+			break;
+		case 2:
+			pieceString = 'S';
+			break;
+		case 3:
+			pieceString = 'O';
+			break;
+		case 4:
+			pieceString = 'T';
+			break;
+		case 5:
+			pieceString = 'L';
+			break;
+		case 6:
+			pieceString = 'J';
+			break;
+	}
+	return pieceString;
 }
 
