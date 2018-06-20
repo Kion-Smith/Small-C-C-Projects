@@ -73,14 +73,14 @@ int main()
 	int curPiece = rand()%7;
 	int nextPiece = rand() % 7;
 	int holdPiece = -1;
-	bool canPlace = false;
-	bool canHold =true;
 	int curRotation = 0;
 	int curX = boardWidth/2;
 	int curY = 0;
 
 	bool bKey[5];
 	bool isRotating;
+	bool isHolding = false;
+	bool hasHolded = false;
 
 	int speed = 20;
 	int speedCount = 0;
@@ -89,6 +89,8 @@ int main()
 	int scoredPieces = 0;
 	int score = 0;
 	vector<int> lines;
+
+
 
 
 	while (isRunning)
@@ -104,10 +106,12 @@ int main()
 			//hex for the keys
 			bKey[k] = (0x8000 & GetAsyncKeyState((unsigned char)("\x27\x25\x28ZX"[k]))) != 0;
 		}
+		//movement
 		curX += (bKey[0] && validPieceLoc(curPiece, curRotation, curX + 1, curY)) ? 1 : 0;
 		curX -= (bKey[1] && validPieceLoc(curPiece, curRotation, curX - 1, curY)) ? 1 : 0;
 		curY += (bKey[2] && validPieceLoc(curPiece, curRotation, curX, curY + 1)) ? 1 : 0;
 
+		//rotations 
 		if (bKey[3])
 		{
 			curRotation += (isRotating && validPieceLoc(curPiece, curRotation + 1, curX, curY)) ? 1 : 0;
@@ -118,30 +122,35 @@ int main()
 			isRotating = true;
 		}
 
-		
-		if (bKey[4] && canHold && !canPlace)
+		//switch keys for holding and letting go
+		if (bKey[4] && !hasHolded && !isHolding)
 		{
+			hasHolded = true;
+
+			curX = boardWidth / 2;
+			curY = 0;
+
 			holdPiece = curPiece;
 			curPiece = nextPiece;
 
-			canPlace = true;
-			canHold = false;
+			isHolding = true;
+
+			
 		}
-		else if (bKey[4] && !canHold && canPlace)
+		else if (bKey[4] && !hasHolded && isHolding)
 		{
-		
-			curX = boardWidth/2;
+			hasHolded = true;
+
+			curX = boardWidth / 2;
 			curY = 0;
 
-			int temp = 0;
-			temp = curPiece;
+			int temp = curPiece;
 			curPiece = holdPiece;
 			holdPiece = temp;
-			
-			canPlace = false;
-			//canHold = true;
-		}
 
+			isHolding = true;
+		}
+	
 		//gravity
 		if (gravity)
 		{
@@ -162,8 +171,7 @@ int main()
 						if (pieces[curPiece][rotatePiece(px, py, curRotation)] == L'X')
 						{
 							board[(curY + py) * boardWidth + (curX + px)] = curPiece + 1;
-							//not working like I want, works if key is pressed on first item
-							canPlace = true;
+						
 							
 						}
 					}
@@ -173,13 +181,17 @@ int main()
 				//speed changes the number of game ticks
 				scoredPieces++;
 				if (scoredPieces % 10 == 0)
-				{
+				{	
 					if (speed >= 10)
 					{
 						speed--;
 					}
 				}
+				
+				//once scored stop holding
+				hasHolded = false;
 
+				
 				for (int py = 0; py < 4; py++)
 				{
 					if (curY + py < boardHeight - 1)
@@ -246,6 +258,7 @@ int main()
 		swprintf_s(&screen[2 * screenWidth + boardWidth + 6], 16, L"SCORE: %8d", score);
 		swprintf_s(&screen[6 * screenWidth + boardWidth + 6], 16, L"Next: %9c", convetPieceName(nextPiece));
 		swprintf_s(&screen[8 * screenWidth + boardWidth + 6], 16, L"Hold: %9c", convetPieceName(holdPiece));
+
 
 		if (!lines.empty() )
 		{
