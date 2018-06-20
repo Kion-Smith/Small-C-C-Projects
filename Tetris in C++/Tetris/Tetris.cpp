@@ -59,9 +59,12 @@ int main()
 	}
 
 	wchar_t *screen = new wchar_t[screenWidth*screenHeight];
+	wchar_t *screenMenu = new wchar_t[screenWidth*screenHeight];
+
 	for (int i = 0; i < screenWidth*screenHeight; i++)
 	{ 
 		screen[i] = L' '; 
+		screenMenu[i] = L' ';
 	}
 
 	HANDLE Console = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
@@ -69,6 +72,7 @@ int main()
 	DWORD dwBytesWritten = 0;
 
 	bool isRunning = true;
+	bool inMenu = true;
 
 	int curPiece = rand()%7;
 	int nextPiece = rand() % 7;
@@ -91,9 +95,41 @@ int main()
 	vector<int> lines;
 
 
+	while (isRunning && inMenu)
+	{
+		this_thread::sleep_for(50ms);
+		for (int k = 0; k < 3; k++)
+		{
+			//hex for the keys // up, down, x
+			bKey[k] = (0x8000 & GetAsyncKeyState((unsigned char)("\x27\x28X"[k]))) != 0;
+		}
+
+		for (int x = 0; x < boardWidth; x++)
+		{
+			for (int y = 0; y < boardHeight; y++)
+			{
+				if (x == 0 || y==0 || x == boardWidth - 1 || y == boardHeight - 1)
+				{
+					screenMenu[(y + 2)*screenWidth + (x + 2)] = L'\u2588';
+				}
+				
+			}
+		}
+
+		swprintf_s(&screenMenu[5*screenWidth + 6], 6, L"Play ");
+		swprintf_s(&screenMenu[10 * screenWidth + 6], 6, L"Help ");
+		swprintf_s(&screenMenu[15 * screenWidth + 6], 6, L"Exit ");
 
 
-	while (isRunning)
+
+
+		
+
+		WriteConsoleOutputCharacter(Console, screenMenu, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
+
+	}
+
+	while (isRunning && !inMenu)
 	{
 		//speed
 		this_thread::sleep_for(50ms);
@@ -283,6 +319,11 @@ int main()
 
 		WriteConsoleOutputCharacter(Console, screen, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
 		
+	}
+	if (!isRunning)
+	{
+		CloseHandle(Console);
+		cout << "CONTENT BOIS" << endl;
 	}
 	CloseHandle(Console);
 	cout << "Game Over \n SCORE ::" << score << endl;
