@@ -1,6 +1,7 @@
-// Tetris.cpp : Defines the entry point for the console application.
+
 // based of a youtbe tutorial by OneLoneCoder can be found at https://www.youtube.com/watch?v=8OK8_tHeCIA&index=3&list=LL8pDyb4hQUBUbgOxTT9lhlA&t=691s
-// I want to improve on this and add the hold items to the side of the screen and possibley make a main menu
+// I contributed to this code by adding the hold mechanic, the main menu
+// going to implement the help menu, and then possibly clean up code
 #include "stdafx.h"
 #include <iostream>
 #include <string>
@@ -73,6 +74,7 @@ int main()
 
 	bool isRunning = true;
 	bool inMenu = true;
+	
 
 	int curPiece = rand()%7;
 	int nextPiece = rand() % 7;
@@ -94,16 +96,44 @@ int main()
 	int score = 0;
 	vector<int> lines;
 
+	bool menuStates[3];
+	int arrowLoc = 5;
 
 	while (isRunning && inMenu)
 	{
-		this_thread::sleep_for(50ms);
+		this_thread::sleep_for(100ms);
 		for (int k = 0; k < 3; k++)
 		{
 			//hex for the keys // up, down, x
-			bKey[k] = (0x8000 & GetAsyncKeyState((unsigned char)("\x27\x28X"[k]))) != 0;
+			bKey[k] = (0x8000 & GetAsyncKeyState((unsigned char)("\x26\x28X"[k]))) != 0;
 		}
 
+		if (bKey[0])
+		{
+			arrowLoc = (arrowLoc == 5) ? 15 : arrowLoc-=5;
+		}
+
+		if (bKey[1])
+		{
+			arrowLoc = (arrowLoc == 15) ? 5 : arrowLoc += 5;
+		}
+
+		if (bKey[2])
+		{
+			switch (arrowLoc)
+			{
+				case 5:
+					inMenu = false;
+					break;
+				case 10:
+					//add this at a later date
+					break;
+				case 15:
+					exit(0);
+					break;
+			}
+		}
+		
 		for (int x = 0; x < boardWidth; x++)
 		{
 			for (int y = 0; y < boardHeight; y++)
@@ -112,21 +142,21 @@ int main()
 				{
 					screenMenu[(y + 2)*screenWidth + (x + 2)] = L'\u2588';
 				}
+				else
+				{
+					screenMenu[(y + 2)*screenWidth + (x + 2)] = L' ';
+				}
 				
 			}
 		}
+
+		screenMenu[arrowLoc * screenWidth + 4] = L'\u25BA';
 
 		swprintf_s(&screenMenu[5*screenWidth + 6], 6, L"Play ");
 		swprintf_s(&screenMenu[10 * screenWidth + 6], 6, L"Help ");
 		swprintf_s(&screenMenu[15 * screenWidth + 6], 6, L"Exit ");
 
-
-
-
-		
-
 		WriteConsoleOutputCharacter(Console, screenMenu, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
-
 	}
 
 	while (isRunning && !inMenu)
@@ -192,7 +222,7 @@ int main()
 		{
 
 			
-
+			//Move piece down
 			if (validPieceLoc(curPiece, curRotation, curX, curY + 1))
 			{
 				curY++;
@@ -227,7 +257,7 @@ int main()
 				//once scored stop holding
 				hasHolded = false;
 
-				
+				//removing lines after scoreing
 				for (int py = 0; py < 4; py++)
 				{
 					if (curY + py < boardHeight - 1)
@@ -319,11 +349,6 @@ int main()
 
 		WriteConsoleOutputCharacter(Console, screen, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
 		
-	}
-	if (!isRunning)
-	{
-		CloseHandle(Console);
-		cout << "CONTENT BOIS" << endl;
 	}
 	CloseHandle(Console);
 	cout << "Game Over \n SCORE ::" << score << endl;
