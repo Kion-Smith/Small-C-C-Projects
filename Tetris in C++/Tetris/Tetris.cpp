@@ -73,6 +73,7 @@ int main()
 	DWORD dwBytesWritten = 0;
 
 	bool isRunning = true;
+	bool inHelp = false;
 	bool inMenu = true;
 	
 
@@ -99,9 +100,9 @@ int main()
 	bool menuStates[3];
 	int arrowLoc = 5;
 
-	while (isRunning && inMenu)
+	while (isRunning && inMenu && !inHelp)
 	{
-		this_thread::sleep_for(100ms);
+		this_thread::sleep_for(70ms);
 		for (int k = 0; k < 3; k++)
 		{
 			//hex for the keys // up, down, x
@@ -127,6 +128,7 @@ int main()
 					break;
 				case 10:
 					//add this at a later date
+					inHelp = true;
 					break;
 				case 15:
 					exit(0);
@@ -159,7 +161,47 @@ int main()
 		WriteConsoleOutputCharacter(Console, screenMenu, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
 	}
 
-	while (isRunning && !inMenu)
+	while (isRunning && inMenu && inHelp)
+	{
+		this_thread::sleep_for(60ms);
+		for (int k = 0; k < 1; k++)
+		{
+			//hex for the keys // up, down, x
+			bKey[k] = (0x8000 & GetAsyncKeyState((unsigned char)("X"[k]))) != 0;
+		}
+
+		if (bKey[0])
+		{
+			inHelp = false;
+			inMenu = false;
+			isRunning = true;
+
+		}
+
+		for (int x = 0; x < boardWidth; x++)
+		{
+			for (int y = 0; y < boardHeight; y++)
+			{
+				screenMenu[(y + 2)*screenWidth + (x + 2)] = L' ';
+
+			}
+		}
+		swprintf_s(&screenMenu[2 * screenWidth], 34, L"Modified Tetris from OneLoneCoder"); 
+		swprintf_s(&screenMenu[3 * screenWidth+ 8], 14, L"by Kion Smith");
+
+		swprintf_s(&screenMenu[5 * screenWidth], 24, L"-Use the Left and Right");
+		swprintf_s(&screenMenu[6 * screenWidth+2], 27,L"arrow Keys to move a piece");
+
+		swprintf_s(&screenMenu[8 * screenWidth], 34, L"-Use the Down arrow to accelerate");
+
+		swprintf_s(&screenMenu[10 * screenWidth], 21, L"-Use the Z to rotate");
+		swprintf_s(&screenMenu[12 * screenWidth], 32, L"-Use the X to hold/place pieces");
+
+		swprintf_s(&screenMenu[14 * screenWidth], 16, L"Press X to play");
+		WriteConsoleOutputCharacter(Console, screenMenu, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
+	}
+
+	while (isRunning && !inMenu && !inHelp)
 	{
 		//speed
 		this_thread::sleep_for(50ms);
@@ -357,6 +399,7 @@ int main()
 	return 0;
 
 }
+
 
 bool validPieceLoc(int curPiece, int rotation, int posX ,int posY)
 {
