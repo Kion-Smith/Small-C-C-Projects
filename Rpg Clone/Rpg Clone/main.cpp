@@ -166,30 +166,44 @@ int main()
 						{
 							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2550';
 						}
-						else if (x == 0 || x == playFieldWidth - 1 || ( (y>14 && x == 1 ) || (y>14 && x == playFieldWidth - 2) && y<playFieldHeight - 2) )
+						else if (x == 0 || x == playFieldWidth - 1 || ( (y>14 && x == 1 ) || (y>14 && x == playFieldWidth - 2) && y<playFieldHeight - 2) || (y>14 && (x == playFieldWidth - 16 || x == playFieldWidth - 17)) )
 						{	
 							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2551';
 						}
-						//Coner
-						else if( x== 1 && y == 14)
+						//Corner
+
+						if( (x== 1 && y == 14) || (x == playFieldWidth - 16 && y ==14) )
 						{
-							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2554';
+							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2554'; //top left
 						}
-						else if (x == playFieldWidth-2 && y == 14)
+						else if ((x == playFieldWidth-2 && y == 14) || (x == playFieldWidth - 17 && y == 14))
 						{
-							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2557';
+							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u2557'; //top right
 						}
-						else if (x == 1 && y == playFieldHeight - 2)
+						else if ((x == 1 && y == playFieldHeight - 2) || (x == playFieldWidth - 16 && y == playFieldHeight - 2))
 						{
-							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u255A';
+							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u255A'; // bottom left
 						}
-						else if (x == playFieldWidth - 2 && y == playFieldHeight -2)
+						else if ( (x == playFieldWidth - 2 && y == playFieldHeight -2) || (x == playFieldWidth - 17 && y == playFieldHeight - 2))
 						{
-							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u255D';
+							battleScreen[(y + 2)*consoleWidth + (x + 4)] = L'\u255D'; //bottom tight
 						}				
 
 					}
 				}
+
+				//just so I can calculate the locations of the arrow
+				battleScreen[17*consoleWidth + 39] = L'\u25BA'; // 1 postion
+				battleScreen[17 * consoleWidth + 46] = L'\u25BA';//2 postion
+				battleScreen[19 * consoleWidth + 46] = L'\u25BA'; //4 postion
+				battleScreen[19 * consoleWidth + 39] = L'\u25BA'; // 3 postion
+
+				swprintf_s(&battleScreen[17 * consoleWidth + 40], 6, L"FIGHT");
+				swprintf_s(&battleScreen [17 * consoleWidth + 47], 5, L"TEAM");
+
+				swprintf_s(&battleScreen[19 * consoleWidth + 40], 6, L"ITEMS");
+				swprintf_s(&battleScreen[19 * consoleWidth + 47], 4, L"RUN");
+
 
 				WriteConsoleOutputCharacter(console, battleScreen, consoleWidth*consoleHeight, { 0,0 }, &dwBytesWritten);
 
@@ -202,7 +216,6 @@ int main()
 			ranAnimation = false;
 			screen[curY*consoleWidth + curX] = L'\u263B';
 			WriteConsoleOutputCharacter(console, screen, consoleWidth*consoleHeight, { 0,0 }, &dwBytesWritten);
-
 			
 		}
 		
@@ -210,6 +223,51 @@ int main()
 	} //end game loop
 
 	return 0;
+}
+
+
+int battleMenustate(bool bMenu[], int keyType)
+{
+	int curState = -1;
+	int loc = 0;
+
+	for (int i = 0; i < 4; i--)
+	{
+		if (bMenu[i])
+		{
+			curState = 1;
+		}
+	}
+
+	switch (keyType)
+	{
+		case 1:
+			if (curState != 1 || curState != 4)
+			{
+				//return the loation of this point
+			}
+			break;
+		case 2:
+			if (curState != 2 || curState != 3)
+			{
+				//return the loation of this point
+			}
+			break;
+		case 3:
+			if (curState != 3 || curState != 1)
+			{
+				//return the loation of this point
+			}
+			break;
+		case 4:
+			if (curState != 4 || curState != 1)
+			{
+				//return the loation of this point
+			}
+			break;
+	}
+//should return state 1
+	return loc;
 }
 
 bool isBattleTile(wchar_t curTile,bool battleState)
@@ -228,35 +286,7 @@ bool isBattleTile(wchar_t curTile,bool battleState)
 	}
 }
 
-//need to add some contion to know what key was pressed
-int battleMenustate(bool bMenu[],int keyType)
-{	
-	int prevState = -1;
-	//change to a constant later
-	for (int i = 0; i < 4; i--)
-	{
-		//condesne this when I have more time
-		if (bMenu[i])
-		{
-			prevState = i;
-			break;
-		}
-	}
 
-	//if no item was last selected
-	if (prevState == -1)
-	{
-		//possibly a switch statement
-		//choose some key contions
-	}
-	else
-	{
-		//choose some key contions
-	}
-
-
-	return -1;
-}
 //going to add collsion to other obsticals later
 bool checkNextMove(int posX, int posY)
 {
