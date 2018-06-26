@@ -118,6 +118,13 @@ int main()
 			}
 		}
 
+		if (inBattle)
+		{
+			
+	
+			//loc = ()
+		}
+
 		for (int x = 0; x < playFieldWidth; x++)
 		{
 			for (int y = 0; y < playFieldHeight; y++)
@@ -192,11 +199,10 @@ int main()
 					}
 				}
 
-				//just so I can calculate the locations of the arrow
-				battleScreen[17*consoleWidth + 39] = L'\u25BA'; // 1 postion
-				battleScreen[17 * consoleWidth + 46] = L'\u25BA';//2 postion
-				battleScreen[19 * consoleWidth + 46] = L'\u25BA'; //4 postion
-				battleScreen[19 * consoleWidth + 39] = L'\u25BA'; // 3 postion
+				//counts to 30 testint location
+				swprintf_s(&battleScreen[17 * consoleWidth+6],31, L"FIGHTFIGHTFIGHTFIGHTFIGHTFIGHT");
+				swprintf_s(&battleScreen[18 * consoleWidth + 6], 31, L"FIGHTFIGHTFIGHTFIGHTFIGHTFIGHT");
+				swprintf_s(&battleScreen[19 * consoleWidth + 6], 31, L"FIGHTFIGHTFIGHTFIGHTFIGHTFIGHT");
 
 				swprintf_s(&battleScreen[17 * consoleWidth + 40], 6, L"FIGHT");
 				swprintf_s(&battleScreen [17 * consoleWidth + 47], 5, L"TEAM");
@@ -226,7 +232,7 @@ int main()
 }
 
 
-int battleMenustate(bool bMenu[], int keyType)
+int battleMenustate(bool bMenu[],int keyType)
 {
 	int curState = -1;
 	int loc = 0;
@@ -235,8 +241,13 @@ int battleMenustate(bool bMenu[], int keyType)
 	{
 		if (bMenu[i])
 		{
-			curState = 1;
+			curState = i;
 		}
+	}
+
+	if (curState == -1)
+	{
+		curState = 1;
 	}
 
 	switch (keyType)
@@ -244,25 +255,25 @@ int battleMenustate(bool bMenu[], int keyType)
 		case 1:
 			if (curState != 1 || curState != 4)
 			{
-				//return the loation of this point
+				loc = 17 * consoleWidth + 39;
 			}
 			break;
 		case 2:
 			if (curState != 2 || curState != 3)
 			{
-				//return the loation of this point
+				loc = 17 * consoleWidth + 46;
 			}
 			break;
 		case 3:
 			if (curState != 3 || curState != 1)
 			{
-				//return the loation of this point
+				loc = 19 * consoleWidth + 39;
 			}
 			break;
 		case 4:
 			if (curState != 4 || curState != 1)
 			{
-				//return the loation of this point
+				loc = 19 * consoleWidth + 46;
 			}
 			break;
 	}
