@@ -1,7 +1,7 @@
 
 // based of a youtbe tutorial by OneLoneCoder can be found at https://www.youtube.com/watch?v=8OK8_tHeCIA&index=3&list=LL8pDyb4hQUBUbgOxTT9lhlA&t=691s
-// I contributed to this code by adding the hold mechanic, the main menu
-// going to implement the help menu, and then possibly clean up code
+// I contributed to this code by adding the hold mechanic, see next piece mechanic,main menu, and using diffrent offsets to place the screen further in the middle
+
 #include "stdafx.h"
 #include <iostream>
 #include <string>
@@ -21,6 +21,9 @@ int screenHeight = 30;
 
 int boardWidth = 12;
 int boardHeight = 18;
+
+int xOffset = 27;
+int yOffset = 2;
 
 unsigned char *board = nullptr;
 
@@ -127,7 +130,6 @@ int main()
 					inMenu = false;
 					break;
 				case 10:
-					//add this at a later date
 					inHelp = true;
 					break;
 				case 15:
@@ -142,21 +144,21 @@ int main()
 			{
 				if (x == 0 || y==0 || x == boardWidth - 1 || y == boardHeight - 1)
 				{
-					screenMenu[(y + 2)*screenWidth + (x + 2)] = L'\u2588';
+					screenMenu[(y + yOffset)*screenWidth + (x + xOffset)] = L'\u2588';
 				}
 				else
 				{
-					screenMenu[(y + 2)*screenWidth + (x + 2)] = L' ';
+					screenMenu[(y + yOffset)*screenWidth + (x + xOffset)] = L' ';
 				}
 				
 			}
 		}
 
-		screenMenu[arrowLoc * screenWidth + 4] = L'\u25BA';
+	screenMenu[arrowLoc * screenWidth + yOffset+xOffset] = L'\u25BA';
 
-		swprintf_s(&screenMenu[5*screenWidth + 6], 6, L"Play ");
-		swprintf_s(&screenMenu[10 * screenWidth + 6], 6, L"Help ");
-		swprintf_s(&screenMenu[15 * screenWidth + 6], 6, L"Exit ");
+	swprintf_s(&screenMenu[5*screenWidth+yOffset+xOffset+2], 6, L"Play ");
+	swprintf_s(&screenMenu[10 * screenWidth + yOffset + xOffset + 2], 6, L"Help ");
+	swprintf_s(&screenMenu[15 * screenWidth + yOffset + xOffset + 2], 6, L"Exit ");
 
 		WriteConsoleOutputCharacter(Console, screenMenu, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
 	}
@@ -182,10 +184,11 @@ int main()
 		{
 			for (int y = 0; y < boardHeight; y++)
 			{
-				screenMenu[(y + 2)*screenWidth + (x + 2)] = L' ';
+				screenMenu[(y + yOffset)*screenWidth + (x + xOffset)] = L' ';
 
 			}
 		}
+		
 		swprintf_s(&screenMenu[2 * screenWidth], 34, L"Modified Tetris from OneLoneCoder"); 
 		swprintf_s(&screenMenu[3 * screenWidth+ 8], 14, L"by Kion Smith");
 
@@ -198,6 +201,7 @@ int main()
 		swprintf_s(&screenMenu[12 * screenWidth], 32, L"-Use the X to hold/place pieces");
 
 		swprintf_s(&screenMenu[14 * screenWidth], 16, L"Press X to play");
+		
 		WriteConsoleOutputCharacter(Console, screenMenu, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
 	}
 
@@ -347,7 +351,7 @@ int main()
 		{
 			for (int y = 0; y < boardHeight; y++)
 			{
-				screen[(y + 2)*screenWidth + (x + 2)] = L" ABCDEFG=#"[board[y*boardWidth + x]];
+				screen[(y + yOffset)*screenWidth + (x + xOffset)] = L" ABCDEFG=#"[board[y*boardWidth + x]];
 			}
 		}
 
@@ -357,16 +361,18 @@ int main()
 			{
 				if (pieces[curPiece][rotatePiece(px, py, curRotation)] == L'X')
 				{
-					screen[(curY + py + 2)*screenWidth + (curX + px + 2)] = curPiece + 65;
+					screen[(curY + py + yOffset)*screenWidth + (curX + px + xOffset)] = curPiece + 65;
 				}
 			}
 		}
 
 		
-		swprintf_s(&screen[2 * screenWidth + boardWidth + 6], 16, L"SCORE: %8d", score);
-		swprintf_s(&screen[6 * screenWidth + boardWidth + 6], 16, L"Next: %9c", convetPieceName(nextPiece));
-		swprintf_s(&screen[8 * screenWidth + boardWidth + 6], 16, L"Hold: %9c", convetPieceName(holdPiece));
-
+		
+		swprintf_s(&screen[2 * screenWidth + boardWidth + (yOffset+xOffset)], 16, L"SCORE: %8d", score);
+		swprintf_s(&screen[6 * screenWidth + boardWidth+(yOffset + xOffset) ], 16, L"Next: %9c", convetPieceName(nextPiece));
+		
+		swprintf_s(&screen[2 * screenWidth + (yOffset)], 16, L"Hold: %9c", convetPieceName(holdPiece));
+	
 
 		if (!lines.empty() )
 		{
@@ -431,7 +437,7 @@ int rotatePiece(int px, int py, int r)
 {
 	switch (r % 4)
 	{
-		// 0,90,180,270 rotation states
+	// 0,90,180,270 rotation states
 	case 0:
 		return py * 4 + px;
 	case 1:
